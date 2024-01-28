@@ -6,7 +6,7 @@ import (
 )
 
 func TestChan(t *testing.T) {
-	c := NewInfChan(1)
+	c := NewInfChan[int](1)
 
 	for i := 0; i < 100; i++ {
 		c.Put(i)
@@ -23,7 +23,7 @@ func TestChan(t *testing.T) {
 	}
 }
 func TestName(t *testing.T) {
-	c := NewInfChan(10)
+	c := NewInfChan[int](10)
 	go func() {
 		for i := 0; i < 100; i++ {
 			go func() {
