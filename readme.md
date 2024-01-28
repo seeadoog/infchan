@@ -6,7 +6,7 @@ InfChan is a go chan with infinity capacity. Put option on InfChan will never bl
 ### example
 ````
 
-c := NewInfChan(1)
+c := NewInfChan[int](1)
 
 for i := 0; i < 10; i++ {
 c.Put(i)
