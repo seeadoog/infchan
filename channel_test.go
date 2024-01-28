@@ -6,7 +6,7 @@ import (
 )
 
 func TestChan(t *testing.T) {
-	c := NewInfChan[int](1)
+	c := NewChan[int](1)
 
 	for i := 0; i < 100; i++ {
 		c.Put(i)
@@ -23,7 +23,7 @@ func TestChan(t *testing.T) {
 	}
 }
 func TestName(t *testing.T) {
-	c := NewInfChan[int](10)
+	c := NewChan[int](10)
 	go func() {
 		for i := 0; i < 100; i++ {
 			go func() {
@@ -46,4 +46,14 @@ func TestCC(t *testing.T) {
 	c <- 1
 	fmt.Println(len(c))
 	fmt.Println(cap(c))
+}
+
+func BenchmarkChan(b *testing.B) {
+	// TODO: Initialize
+	c := NewChan[int](1)
+	for i := 0; i < b.N; i++ {
+		// TODO: Your Code Here
+		c.Put(1)
+		<-c.Get()
+	}
 }

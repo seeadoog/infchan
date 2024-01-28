@@ -5,24 +5,24 @@ import (
 	"sync"
 )
 
-type InfChan[T any] struct {
+type Chan[T any] struct {
 	data    chan T
 	backlog *list.List
 	lock    sync.Mutex
 	closed  int
 }
 
-func NewInfChan[T any](bufferCap int) *InfChan[T] {
+func NewChan[T any](bufferCap int) *Chan[T] {
 	if bufferCap < 1 {
 		panic("bufferCap should be > 0")
 	}
-	return &InfChan[T]{
+	return &Chan[T]{
 		data:    make(chan T, bufferCap),
 		backlog: list.New(),
 	}
 }
 
-func (c *InfChan[T]) load() {
+func (c *Chan[T]) load() {
 	c.lock.Lock()
 	if c.backlog.Len() > 0 {
 		select {
@@ -40,12 +40,12 @@ func (c *InfChan[T]) load() {
 	c.lock.Unlock()
 }
 
-func (c *InfChan[T]) Get() <-chan T {
+func (c *Chan[T]) Get() <-chan T {
 	c.load()
 	return c.data
 }
 
-func (c *InfChan[T]) Put(v T) {
+func (c *Chan[T]) Put(v T) {
 	c.lock.Lock()
 	if c.closed > 0 {
 		c.lock.Unlock()
@@ -63,14 +63,14 @@ func (c *InfChan[T]) Put(v T) {
 	c.lock.Unlock()
 }
 
-func (c *InfChan[T]) Len() (length int) {
+func (c *Chan[T]) Len() (length int) {
 	c.lock.Lock()
 	length = c.backlog.Len() + len(c.data)
 	c.lock.Unlock()
 	return
 }
 
-func (c *InfChan[T]) Close() {
+func (c *Chan[T]) Close() {
 	c.lock.Lock()
 	if c.closed > 0 {
 		c.lock.Unlock()
